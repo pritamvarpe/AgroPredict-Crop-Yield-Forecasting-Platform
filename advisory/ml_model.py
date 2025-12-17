@@ -3,6 +3,9 @@ import os
 from django.conf import settings
 import statistics
 import pickle
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.tree import DecisionTreeRegressor
+
 
 class YieldPredictor:
     def __init__(self):
