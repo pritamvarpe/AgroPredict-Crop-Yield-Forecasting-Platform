@@ -8,7 +8,7 @@ load_dotenv()
 
 SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-fallback-key-for-development')
 
-DEBUG = os.getenv('DEBUG', 'True') == 'True'
+DEBUG = True  # Temporarily enable for debugging
 
 ALLOWED_HOSTS = ['*']
 
@@ -94,6 +94,11 @@ STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Login/Logout URLs
+LOGIN_URL = '/login/'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
 
 # Twilio Credentials (Optional)
 TWILIO_ACCOUNT_SID = os.getenv('TWILIO_ACCOUNT_SID', '')
