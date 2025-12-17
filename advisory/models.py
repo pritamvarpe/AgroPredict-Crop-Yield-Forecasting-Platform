@@ -52,6 +52,21 @@ class FarmInput(models.Model):
     
     def __str__(self):
         return f"{self.crop} - {self.district} - {self.season}"
+    
+    def get_crop_display(self):
+        return dict(self.CROP_CHOICES).get(self.crop, self.crop)
+    
+    def get_district_display(self):
+        return dict(self.DISTRICT_CHOICES).get(self.district, self.district)
+    
+    def get_season_display(self):
+        return dict(self.SEASON_CHOICES).get(self.season, self.season)
+    
+    def get_irrigation_display(self):
+        return dict(self.IRRIGATION_CHOICES).get(self.irrigation, self.irrigation)
+    
+    def get_soil_type_display(self):
+        return dict(self.SOIL_CHOICES).get(self.soil_type, self.soil_type)
 
 class Recommendation(models.Model):
     farm_input = models.OneToOneField(FarmInput, on_delete=models.CASCADE)

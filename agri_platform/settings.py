@@ -95,14 +95,14 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Twilio Credentials
-TWILIO_ACCOUNT_SID = os.getenv('TWILIO_ACCOUNT_SID')
-TWILIO_AUTH_TOKEN = os.getenv('TWILIO_AUTH_TOKEN')
-TWILIO_PHONE_NUMBER = os.getenv('TWILIO_PHONE_NUMBER')
+# Twilio Credentials (Optional)
+TWILIO_ACCOUNT_SID = os.getenv('TWILIO_ACCOUNT_SID', '')
+TWILIO_AUTH_TOKEN = os.getenv('TWILIO_AUTH_TOKEN', '')
+TWILIO_PHONE_NUMBER = os.getenv('TWILIO_PHONE_NUMBER', '')
 
-# Developer's mobile number
-DEVELOPER_MOBILE_NUMBER = os.getenv('DEVELOPER_MOBILE_NUMBER')
+# Developer's mobile number (Optional)
+DEVELOPER_MOBILE_NUMBER = os.getenv('DEVELOPER_MOBILE_NUMBER', '')
 
-# Weather API Configuration
-WEATHER_API_KEY = os.getenv('WEATHER_API_KEY')
-WEATHER_API_BASE_URL = os.getenv('WEATHER_API_BASE_URL')
+# Weather API Configuration (Optional)
+WEATHER_API_KEY = os.getenv('WEATHER_API_KEY', '')
+WEATHER_API_BASE_URL = os.getenv('WEATHER_API_BASE_URL', 'https://api.openweathermap.org/data/2.5')

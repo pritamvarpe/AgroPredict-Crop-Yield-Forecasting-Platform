@@ -156,9 +156,9 @@ def weather_forecast(request):
     api_key = settings.WEATHER_API_KEY
     base_url = settings.WEATHER_API_BASE_URL
 
-    if api_key == 'your-weather-api-key-here':
-        messages.error(request, "Weather API key not configured. Please set WEATHER_API_KEY in settings.")
-        return render(request, 'advisory/weather.html', {'error': 'API key not configured'})
+    if not api_key or api_key == 'your-weather-api-key-here':
+        messages.info(request, "Weather API is not configured. This feature is currently unavailable.")
+        return render(request, 'advisory/weather.html', {'error': 'Weather API not configured', 'location': location})
 
     try:
         # Fetch current weather
