@@ -174,7 +174,7 @@ def weather_forecast(request):
         if current_response.status_code != 200 or forecast_response.status_code != 200:
             error_msg = f"API Error - Current: {current_response.status_code} ({current_response.text}), Forecast: {forecast_response.status_code} ({forecast_response.text})"
             messages.error(request, error_msg)
-            return render(request, 'advisory/weather.html', {'error': error_msg})
+            return render(request, 'advisory/weather.html', {'error': error_msg, 'location': location})
 
         # Process forecast data (group by day)
         daily_forecasts = {}
@@ -203,7 +203,7 @@ def weather_forecast(request):
 
     except Exception as e:
         messages.error(request, f"Error fetching weather data: {str(e)}")
-        return render(request, 'advisory/weather.html', {'error': str(e)})
+        return render(request, 'advisory/weather.html', {'error': str(e), 'location': location})
 
 # def chatbot(request):
 #     """Chatbot API endpoint"""
