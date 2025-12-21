@@ -140,12 +140,20 @@ def signup(request):
     if request.method == 'POST':
         form = SignupForm(request.POST)
         if form.is_valid():
-            user = form.save()
-            login(request, user)
-            messages.success(request, "Account created successfully! Welcome to Krishi Salahkar.")
-            return redirect('home')
+            try:
+                user = form.save()
+                login(request, user)
+                messages.success(request, "Account created successfully! Welcome to Krishi Salahkar.")
+                return redirect('home')
+            except Exception as e:
+                messages.error(request, f"Error creating account: {str(e)}. Please try again.")
+                print(f"Signup error: {e}")  # For debugging
         else:
-            messages.error(request, "Please correct the errors below.")
+            # Add detailed error messages
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f"{field.title()}: {error}")
+            print(f"Form errors: {form.errors}")  # For debugging
     else:
         form = SignupForm()
     return render(request, 'advisory/signup.html', {'form': form})
