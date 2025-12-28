@@ -13,6 +13,7 @@ urlpatterns = [
     path('signup/', views.signup, name='signup'),
     path('contact/', views.contact, name='contact'),
     path('weather/', views.weather_forecast, name='weather_forecast'),
+    path('setup-db/', views.setup_database, name='setup_database'),
     # path('chatbot/', views.chatbot, name='chatbot'),
     path('i18n/setlang/', set_language, name='set_language'),
 ]

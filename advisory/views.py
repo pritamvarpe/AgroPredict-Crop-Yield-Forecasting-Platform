@@ -3,7 +3,7 @@ from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.conf import settings
 from .forms import FarmInputForm, SignupForm, ContactForm
 from .models import FarmInput, Recommendation, Contact
@@ -12,6 +12,9 @@ import traceback
 import requests
 # import openai
 import os
+from django.core.management import call_command
+from django.contrib.auth import get_user_model
+import io
 
 def home(request):
     """Home page view"""
@@ -285,3 +288,25 @@ def weather_forecast(request):
 #             })
 
 #     return JsonResponse({'error': 'Method not allowed'}, status=405)
+
+def setup_database(request):
+    """Run migrations and setup database via web request"""
+    output = io.StringIO()
+    
+    try:
+        # Run migrations
+        call_command('migrate', stdout=output, stderr=output)
+        
+        # Create superuser if doesn't exist
+        User = get_user_model()
+        if not User.objects.filter(username='admin').exists():
+            User.objects.create_superuser('admin', 'admin@example.com', 'admin123')
+            output.write("Admin user created successfully\n")
+        else:
+            output.write("Admin user already exists\n")
+            
+        result = output.getvalue()
+        return HttpResponse(f"<pre>Database setup completed:\n\n{result}</pre>")
+        
+    except Exception as e:
+        return HttpResponse(f"<pre>Error: {str(e)}\n\nOutput:\n{output.getvalue()}</pre>")
