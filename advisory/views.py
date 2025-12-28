@@ -16,13 +16,39 @@ from django.core.management import call_command
 from django.contrib.auth import get_user_model
 import io
 
+def auto_login_user(request):
+    """Auto-login with default user"""
+    if not request.user.is_authenticated:
+        User = get_user_model()
+        try:
+            # Get or create default user
+            user, created = User.objects.get_or_create(
+                username='demo_user',
+                defaults={
+                    'email': 'demo@agropredict.com',
+                    'first_name': 'Demo',
+                    'last_name': 'User'
+                }
+            )
+            if created:
+                user.set_password('demo123')
+                user.save()
+            
+            # Auto-login the user
+            login(request, user)
+        except Exception as e:
+            # If database doesn't exist, continue without login
+            pass
+    return request.user
+
 def home(request):
     """Home page view"""
+    auto_login_user(request)  # Auto-login user
     return render(request, 'advisory/home.html')
 
-@login_required(login_url='/login/')
 def farm_input(request):
     """Farm input form view"""
+    user = auto_login_user(request)  # Auto-login user
     if request.method == 'POST':
         form = FarmInputForm(request.POST)
         if form.is_valid():
@@ -63,9 +89,9 @@ def farm_input(request):
     
     return render(request, 'advisory/farm_input.html', {'form': form})
 
-@login_required(login_url='/login/')
 def recommendation(request, recommendation_id):
     """Display recommendation results"""
+    auto_login_user(request)  # Auto-login user
     try:
         recommendation = Recommendation.objects.get(id=recommendation_id)
         
@@ -109,6 +135,7 @@ def about(request):
 
 def contact(request):
     """Contact form view"""
+    auto_login_user(request)  # Auto-login user
     if request.method == 'POST':
         form = ContactForm(request.POST)
         if form.is_valid():
@@ -163,6 +190,7 @@ def signup(request):
 
 def weather_forecast(request):
     """Weather forecast view"""
+    auto_login_user(request)  # Auto-login user
     location = request.GET.get('location', 'Bhubaneswar')  # Default to Bhubaneswar
     api_key = settings.WEATHER_API_KEY
     base_url = settings.WEATHER_API_BASE_URL
@@ -297,8 +325,24 @@ def setup_database(request):
         # Run migrations
         call_command('migrate', stdout=output, stderr=output)
         
-        # Create superuser if doesn't exist
+        # Create default demo user
         User = get_user_model()
+        user, created = User.objects.get_or_create(
+            username='demo_user',
+            defaults={
+                'email': 'demo@agropredict.com',
+                'first_name': 'Demo',
+                'last_name': 'User'
+            }
+        )
+        if created:
+            user.set_password('demo123')
+            user.save()
+            output.write("Demo user created successfully\n")
+        else:
+            output.write("Demo user already exists\n")
+        
+        # Create admin user
         if not User.objects.filter(username='admin').exists():
             User.objects.create_superuser('admin', 'admin@example.com', 'admin123')
             output.write("Admin user created successfully\n")
@@ -306,7 +350,7 @@ def setup_database(request):
             output.write("Admin user already exists\n")
             
         result = output.getvalue()
-        return HttpResponse(f"<pre>Database setup completed:\n\n{result}</pre>")
+        return HttpResponse(f"<pre>Database setup completed:\n\n{result}\n\nYou can now use the app without login!</pre>")
         
     except Exception as e:
         return HttpResponse(f"<pre>Error: {str(e)}\n\nOutput:\n{output.getvalue()}</pre>")
