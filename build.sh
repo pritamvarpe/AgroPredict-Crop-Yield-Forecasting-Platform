@@ -6,17 +6,13 @@ set -o errexit
 echo "Installing dependencies..."
 pip install -r requirements.txt
 
-# Run migrations for PostgreSQL
-echo "Creating migrations..."
-python manage.py makemigrations
-python manage.py makemigrations advisory
-
+# Run migrations using Python script
 echo "Running migrations..."
-python manage.py migrate
+python run_migrations.py
 
 # Create superuser
 echo "Creating superuser..."
-echo "from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.create_superuser('admin', 'admin@example.com', 'admin123') if not User.objects.filter(username='admin').exists() else print('Admin user already exists')" | python manage.py shell
+python -c "import os, django; os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'agri_platform.settings'); django.setup(); from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.create_superuser('admin', 'admin@example.com', 'admin123') if not User.objects.filter(username='admin').exists() else print('Admin user already exists')"
 
 # Collect static files
 echo "Collecting static files..."
