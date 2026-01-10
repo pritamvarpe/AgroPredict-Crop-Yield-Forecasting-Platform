@@ -29,7 +29,7 @@ A Django-based web application that provides AI-powered crop yield predictions a
    ```
 
 4. **Access Application**:
-   Open http://localhost:8000 in your browser
+   https://agropredict-app.onrender.com/ 
 
 ## Project Structure
 
